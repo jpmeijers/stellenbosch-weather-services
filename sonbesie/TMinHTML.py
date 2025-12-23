@@ -10,9 +10,9 @@ import math
 import os
 import ConfigParser
 
-settings_file = os.path.expanduser("~/stellenbosch-weather/settings.conf")
-lock_file = os.path.expanduser("~/stellenbosch-weather/importWeatherdata/sonbesie/TMin.lock")
-log_file = os.path.expanduser("~/stellenbosch-weather/importWeatherdata/sonbesie/TMin.log")
+settings_file = os.path.expanduser("~/settings.conf")
+lock_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TMin.lock")
+log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TMin.log")
 
 Config = ConfigParser.ConfigParser()
 Config.read(settings_file)
