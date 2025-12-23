@@ -5,3 +5,4 @@ cd -P -- "$(dirname -- "$0")"
 
 # Sonbesie
 ./sonbesie/THourHTML.py
+./sonbesie/ThermocoupleHTML.py
