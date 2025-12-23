@@ -9,14 +9,44 @@ import urllib2
 import os
 import ConfigParser
 
+settings_file = os.path.expanduser("~/settings.conf")
+lock_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TDay.lock")
+log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TDay.log")
+
 Config = ConfigParser.ConfigParser()
-Config.read(os.path.expanduser("~/settings.conf"))
+Config.read(settings_file)
+
+
+#This is to check if there is already a lock file existing#
+if os.access(lock_file, os.F_OK):
+  #if the lockfile is already there then check the PID number
+  #in the lock file
+  pidfile = open(lock_file, "r")
+  pidfile.seek(0)
+  oldpid = pidfile.readline()
+  # Now we check the PID from lock file matches to the current
+  # process PID
+  if oldpid.strip() != "" and os.path.exists("/proc/%s" % oldpid):
+    print "You already have an instance of the program running"
+    print "It is running as process %s," % oldpid
+    sys.exit(1)
+  else:
+    print "File is there but the program is not running"
+    print "Removing lock file for the: %s as it can be there because of the program last time it was run" % oldpid
+    os.remove(lock_file)
+
+#This is part of code where we put a PID file in the lock file
+pidfile = open(lock_file, "w")
+newpid = str(os.getpid())
+print "PID="+newpid
+pidfile.write(newpid)
+pidfile.close()
 
 stationName = "Sonbesie"
 tableName = "SB_TDaily"
 dataFile = "http://"+Config.get("sonbesie", "address")+"/?command=TableDisplay&table=TDaily&records="
 
-log = open("/home/weather/importWeatherdata/sonbesie/TDaily.log", 'a')
+log = open(log_file, 'a')
 log.write( "Run start: "+time.strftime("%Y-%m-%d", time.localtime(time.time()))+" "+time.strftime("%H:%M:%S", time.localtime(time.time()))+"\n" )
 
 try:

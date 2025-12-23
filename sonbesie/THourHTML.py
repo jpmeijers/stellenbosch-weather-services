@@ -10,15 +10,19 @@ import math
 import os
 import ConfigParser
 
+settings_file = os.path.expanduser("~/settings.conf")
+lock_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "THour.lock")
+log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "THour.log")
+
 Config = ConfigParser.ConfigParser()
-Config.read(os.path.expanduser("~/settings.conf"))
+Config.read(settings_file)
 
 
 #This is to check if there is already a lock file existing#
-if os.access("/home/weather/importWeatherdata/sonbesie/THour.lock", os.F_OK):
+if os.access(lock_file, os.F_OK):
   #if the lockfile is already there then check the PID number 
   #in the lock file
-  pidfile = open("/home/weather/importWeatherdata/sonbesie/THour.lock", "r")
+  pidfile = open(lock_file, "r")
   pidfile.seek(0)
   oldpid = pidfile.readline()
   # Now we check the PID from lock file matches to the current
@@ -30,10 +34,10 @@ if os.access("/home/weather/importWeatherdata/sonbesie/THour.lock", os.F_OK):
   else:
     print "File is there but the program is not running"
     print "Removing lock file for the: %s as it can be there because of the program last time it was run" % oldpid
-    os.remove("/home/weather/importWeatherdata/sonbesie/THour.lock")
+    os.remove(lock_file)
 
 #This is part of code where we put a PID file in the lock file
-pidfile = open("/home/weather/importWeatherdata/sonbesie/THour.lock", "w")
+pidfile = open(lock_file, "w")
 newpid = str(os.getpid())
 print "PID="+newpid
 pidfile.write(newpid)
@@ -44,7 +48,7 @@ stationName = "Sonbesie"
 tableName = "SB_THour"
 dataFile = "http://"+Config.get("sonbesie", "address")+"/?command=TableDisplay&table=THour&records="
 
-log = open("/home/weather/importWeatherdata/sonbesie/THour.log", 'a')
+log = open(log_file, 'a')
 log.write( "Run start: "+time.strftime("%Y-%m-%d", time.localtime(time.time()))+" "+time.strftime("%H:%M:%S", time.localtime(time.time()))+"\n" )
 
 try:
