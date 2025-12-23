@@ -1,0 +1,13 @@
+# Import weather data (pull and parsing)
+* * * * * /home/weather/services/import-minutely.sh >> /home/weather/services/cron-minutely.log 2>&1
+# 2 * * * * /home/weather/importWeatherdata/importHourly.sh > /dev/null 2> /dev/null
+# 2 0 * * * /home/weather/importWeatherdata/importDaily.sh > /dev/null 2> /dev/null
+
+# Graphs
+# */5 * * * * /home/weather/generateRRDs/updateAllRRDs.sh > /dev/null 2> /dev/null
+
+# rain aggregation
+# 30 0 * * * /home/weather/generateStaticPages/rain-table.py > /dev/null 2> /dev/null
+
+# Generate Local forecast
+# */5 * * * * wget -O - http://weather.sun.ac.za/forecasting/bt-sager-wc.php > /dev/null 2> /dev/null
